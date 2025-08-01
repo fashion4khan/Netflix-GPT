@@ -1,43 +1,111 @@
-import React, { useState } from "react";
+import React, { useState, useRef} from "react";
 import Header from "./header";
+import { FormValidation, FormValidationWithName } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
 
   const [isSignIn, setIsSignIN] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
   const handleSignIn = () => {
-      setIsSignIN(!isSignIn);
-  }
+    setIsSignIN(!isSignIn);
+  };
+  const handleValidation = () => {
+    const message = isSignIn
+      ? FormValidation(email.current.value, password.current.value)
+      : FormValidationWithName(
+          name.current.value,
+          email.current.value,
+          password.current.value
+        );
+    setErrorMessage(message);
+
+    if (message) return;
+
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " " + errorMessage);
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " " + errorMessage);
+        });
+    }
+  };
   return (
     <div className="relative">
       <Header />
       <div>
-        <img className="absolute inset-0"
+        <img
+          className="absolute inset-0"
           src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_large.jpg"
           alt="bg-img"
         ></img>
       </div>
       <div className="relative z-10 flex items-center justify-center h-full px-4 inset-y-32">
-        <form className="bg-black bg-opacity-80 text-white max-w-md w-full p-8 rounded-md space-y-4">
-          <h1 className="text-3xl font-bold mb-4">{isSignIn ? "Sign In" : "Sign Up"}</h1>
-          {!isSignIn && <input
-            type="text"
-            placeholder="Full name"
-            className="w-full p-3 rounded text-white bg-transparent border-2 white"
-          />}
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="bg-black bg-opacity-80 text-white max-w-md w-full p-8 rounded-md space-y-4"
+        >
+          <h1 className="text-3xl font-bold mb-4">
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </h1>
+          {!isSignIn && (
+            <input
+              type="text"
+              ref={name}
+              placeholder="Full name"
+              className="w-full p-3 rounded text-white bg-transparent border-2 white"
+            />
+          )}
           <input
             type="text"
+            ref={email}
             placeholder="Email or Mobile number"
             className="w-full p-3 rounded text-white bg-transparent border-2 white"
           />
 
           <input
             type="password"
+            ref={password}
             placeholder="Password"
             className="w-full p-3 rounded text-white bg-transparent border-2 white"
           />
-
+          <p className="text-red-600 p-2 m-2 text-lg">{errorMessage}</p>
           <button
             type="submit"
+            onClick={handleValidation}
             className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded font-semibold"
           >
             {isSignIn ? "Sign In" : "Get started"}
@@ -63,7 +131,10 @@ const Login = () => {
 
           <div className="text-sm text-gray-400">
             <span>{isSignIn ? "New to Netflix? " : "Already memeber !"} </span>
-            <span className="text-white hover:underline cursor-pointer" onClick={handleSignIn}>
+            <span
+              className="text-white hover:underline cursor-pointer"
+              onClick={handleSignIn}
+            >
               {isSignIn ? "Sign up now." : " Sign in now"}
             </span>
           </div>
