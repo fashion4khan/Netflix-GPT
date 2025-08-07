@@ -3,3 +3,11 @@ export const Logo =
 
 export const BgImg =
   "https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_large.jpg";
+
+export const Options = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTllMmVmODQ2MGRiNzI1MDdlYWQ2MzA0ZTI0YzQxYSIsIm5iZiI6MTc1NDIyNzAzMy42MjEsInN1YiI6IjY4OGY2MTU5YmI4ZWU2MzViOGI3ZjA1MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qxidlS7b8m5usJRRdXj1VknnWmSjEIFQq3JEHU6Voa8'
+  }
+};
