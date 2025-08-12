@@ -14,7 +14,7 @@ const VideoBackground = ({ movie_id }) => {
     // console.log(json);
     const trailer = json.results[0];
     setMovieId(trailer.key);
-    console.log(trailer);
+    // console.log(trailer);
   };
   useEffect(() => {
     movieTrailor();
